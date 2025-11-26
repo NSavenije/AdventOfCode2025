@@ -1,5 +1,6 @@
 namespace Aoc2025.Day_08 {
     public static class Day08 {
+        const string FILEPATH = "Day_08/input.txt";
         public static void Part1() {
             // TODO: Implement Part 1
             Console.WriteLine("Day 08, Part 1: Not implemented yet.");

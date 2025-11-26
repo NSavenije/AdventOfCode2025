@@ -29,10 +29,7 @@ namespace Aoc2025
 
         private static string? GetSessionFromEnv()
         {
-            string envPath = ".env"; //normal
-            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            if (!File.Exists(envPath))
-                envPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".env")); //for when running from bin/Debug/netX.X
+            string envPath = $"{Utils.GetProjectRoot()}/.env";
             if (!File.Exists(envPath))
                 return null;
             string? sessionLine = File.ReadAllLines(envPath)
