@@ -13,18 +13,10 @@ namespace Aoc2025.Day_01 {
             {
                 char dir = rot[0];
                 int dist = int.Parse(rot[1..]);
-                if (dir == 'L')
-                {
-                    pos = (pos - dist) % 100;
-                }
-                else
-                {
-                    pos = (pos + dist) % 100;
-                }
+                pos = dir == 'L' ? pos - dist : pos + dist;
+                pos = ((pos % 100) + 100) % 100;
                 if (pos == 0)
-                {
                     res++;
-                }
             }
             Console.WriteLine(res);
         }
@@ -39,27 +31,14 @@ namespace Aoc2025.Day_01 {
                 char dir = rot[0];
                 int dist = int.Parse(rot[1..]);
                 res += dist / 100;
-                dist %= 100;                
+                dist %= 100;
 
-                if (dir == 'L')
-                {
-                    pos -= dist;
-                    if (pos <= 0 && (pos + dist != 0))
-                    {
-                        res++;
-                        
-                    }
-                    pos = ((pos % 100) + 100) % 100;
-                }
-                else
-                {
-                    pos += dist;
-                    if (pos >= 100)
-                    {
-                        res++;
-                    }
-                    pos %= 100;   
-                }
+                pos = dir == 'L' ? pos - dist : pos + dist;
+
+                if ((dir == 'L' && pos <= 0 && pos + dist != 0) || (dir == 'R' && pos >= 100))
+                    res++;
+
+                pos = ((pos % 100) + 100) % 100;
             }
             Console.WriteLine(res);
         }
