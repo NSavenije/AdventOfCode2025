@@ -13,13 +13,7 @@ static class Program
 		int month = today.Month;
 		int day = today.Day;
 
-		// Advent of Code runs Dec 1-12 this year
-		if (year == YEAR && month == 12 && day >= 1 && day <= 12)
-		{
-			string dayStr = day.ToString().PadLeft(2, '0');
-			RunDay(dayStr);
-		}
-		else if (args.Length == 2)
+		if (args.Length == 2)
 		{
 			string dayStr = args[0].PadLeft(2, '0');
 			string part = args[1];
@@ -28,6 +22,12 @@ static class Program
 		else if (args.Length == 1)
 		{
 			string dayStr = args[0].PadLeft(2, '0');
+			RunDay(dayStr);
+		}
+		// Advent of Code runs Dec 1-12 this year
+		else if (year == YEAR && month == 12 && day >= 1 && day <= 12)
+		{
+			string dayStr = day.ToString().PadLeft(2, '0');
 			RunDay(dayStr);
 		}
 		else if (args.Length > 2)
