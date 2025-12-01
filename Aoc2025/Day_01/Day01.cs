@@ -6,29 +6,26 @@ namespace Aoc2025.Day_01 {
         public static void Part1() {
             int pos = 50;
             int res = 0;
+
             foreach ((var dir, var dist) in ParseInput())
             {
-                pos = dir == 'L' ? pos - dist : pos + dist;
-                pos = ((pos % 100) + 100) % 100;
-                if (pos == 0)
-                    res++;
+                pos = (Op(dir)(pos, dist) + 100) % 100;
+                res += pos == 0 ? 1 : 0;
             }
             Console.WriteLine(res);
         }
         public static void Part2() {
             int pos = 50;
             int res = 0;
+
             foreach ((var dir, var dist) in ParseInput())
             {
                 res += dist / 100;
                 int distMod = dist % 100;
 
-                pos = dir == 'L' ? pos - distMod : pos + distMod;
-
-                if ((dir == 'L' && pos <= 0 && pos + distMod != 0) || (dir == 'R' && pos >= 100))
-                    res++;
-
-                pos = ((pos % 100) + 100) % 100;
+                pos = Op(dir)(pos, distMod);
+                res += ((pos <= 0 && pos + distMod != 0) || pos >= 100) ? 1 : 0;
+                pos = (pos + 100) % 100;
             }
             Console.WriteLine(res);
         }
@@ -39,5 +36,8 @@ namespace Aoc2025.Day_01 {
                 int dist = int.Parse(x[1..]);
                 return (dir,dist);
             });
+
+        private static Func<int,int,int> Op(char dir) =>
+            dir == 'L' ? (x, y) => x - y : (x, y) => x + y;
     }
 }
