@@ -2,12 +2,12 @@ namespace Aoc2025.Day_02 {
     using System.Linq;
     using static InputParser;
     public static class Day02 {
+                
         const string FILEPATH = "Day_02/input.txt";
         public static void Part1() {
-            var input = ParseLinesAsList(FILEPATH, x => x);
-            var ranges = input[0].Split(",");
+            var ranges = ParseLinesAsList(FILEPATH, x => x.Split(','));
             long sum = 0;
-            foreach (var range in ranges)
+            foreach (var range in ranges[0])
             {
                 var spl = range.Split('-');
                 long start = long.Parse(spl[0]);
@@ -31,64 +31,67 @@ namespace Aoc2025.Day_02 {
             Console.WriteLine(sum);
         }
         public static void Part2() {
-            // TODO: Implement Part 2
-            var input = ParseLinesAsList(FILEPATH, x => x);
-            var ranges = input[0].Split(",");
+            var ranges = ParseLinesAsList(FILEPATH, x => x.Split(','));
             long sum = 0;
-            int count = 0;
-            foreach (var range in ranges)
+            foreach (var range in ranges[0])
             {
-                count++;
-                Console.WriteLine($"range {count} of {ranges.Length}");
-                List<string> knownInvalidIds = [];
-                // bool invalid = false;
+                HashSet<string> knownInvalidIds = [];
                 var spl = range.Split('-');
                 long start = long.Parse(spl[0]);
                 long end = long.Parse(spl[1]);
                 for (long i = start; i <= end; i++)
                 {
-                    // if (invalid) break;
                     var numstring = i.ToString();
-                    var factors = GetFactors(numstring.Length);
-                    if (factors.Count == 0)
-                        continue;
-
-                    foreach(var factor in factors)
+                    foreach(var factor in FactorCache[numstring.Length])
                     {
-                        // if (invalid) break;
-                        var partLength = numstring.Length / (int)factor;
-                        List<string> parts = [];
-                        for (int p = 0; p < factor; p++)
+                        var partLength = numstring.Length / factor;
+                        var span = numstring.AsSpan();
+                        var firstPart = span[..partLength];
+                        bool allEqual = true;
+                        for (int p = 1; p < factor; p++)
                         {
-                            parts.Add(numstring[(p * partLength)..((p+1) * partLength)]);
+                            if (!firstPart.SequenceEqual(span.Slice(p * partLength, partLength)))
+                            {
+                                allEqual = false;
+                                break;
+                            }
                         }
-                        if(parts.All(x => x == parts[0]))
+                        if (allEqual)
                         {
                             if (knownInvalidIds.Contains(numstring))
                                 continue;
                             knownInvalidIds.Add(numstring);
                             sum += i;
-                            Console.WriteLine($"{i}, f:{string.Join(',', factors)}");
-                            // invalid = true;
                         }
                     }
                 }
             }
-
             Console.WriteLine(sum);
         }
 
-        public static List<int> GetFactors(int n)
+
+        private static readonly Dictionary<int, List<int>> FactorCache = new()
         {
-            var factors = new List<int>();
-            for (int i = 2; i <= n; i++)
-            {
-                if (n % i == 0)
-                {
-                    factors.Add(i);
-                }
-            }
-            return factors;
-        }
+            [1] = [],
+            [2] = [2],
+            [3] = [3],
+            [4] = [2, 4],
+            [5] = [5],
+            [6] = [2, 3, 6],
+            [7] = [7],
+            [8] = [2, 4, 8],
+            [9] = [3, 9],
+            [10] = [2, 5, 10],
+            [11] = [11],
+            [12] = [2, 3, 4, 6, 12],
+            [13] = [13],
+            [14] = [2, 7, 14],
+            [15] = [3, 5, 15],
+            [16] = [2, 4, 8, 16],
+            [17] = [17],
+            [18] = [2, 3, 6, 9, 18],
+            [19] = [19],
+            [20] = [2, 4, 5, 10, 20]
+        };
     }
 }
