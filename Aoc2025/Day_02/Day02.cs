@@ -5,40 +5,45 @@ namespace Aoc2025.Day_02 {
                 
         const string FILEPATH = "Day_02/input.txt";
         public static void Part1() {
-            var ranges = ParseLinesAsList(FILEPATH, x => x.Split(','));
             long sum = 0;
-            foreach (var range in ranges[0])
+            var ranges = ParseLinesAsList(FILEPATH, x => x.Split(','))[0];
+            System.Threading.Tasks.Parallel.ForEach(ranges, range =>
             {
                 var spl = range.Split('-');
                 long start = long.Parse(spl[0]);
                 long end = long.Parse(spl[1]);
+                long localSum = 0;
                 for (long i = start; i <= end; i++)
                 {
                     var numstring = i.ToString();
                     if (numstring.Length % 2 == 1)
-                        continue;
-
-                    var halfLength = numstring.Length / 2;
-                    var firstHalf = numstring[..halfLength];
-                    var secondHalf = numstring[halfLength..];
-                    if (firstHalf == secondHalf)
                     {
-                        
-                        sum += long.Parse(numstring);
-                    }                    
+                        if (numstring.Length == end.ToString().Length)
+                            break;
+                        else
+                        {
+                            i = (long)Math.Pow(10, numstring.Length);
+                            continue;
+                        }
+                    }
+                    var halfLength = numstring.Length / 2;
+                    if (numstring[..halfLength] == numstring[halfLength..])
+                        localSum += long.Parse(numstring);
                 }
-            }
+                System.Threading.Interlocked.Add(ref sum, localSum);
+            });
             Console.WriteLine(sum);
         }
         public static void Part2() {
-            var ranges = ParseLinesAsList(FILEPATH, x => x.Split(','));
+            var ranges = ParseLinesAsList(FILEPATH, x => x.Split(','))[0];
             long sum = 0;
-            foreach (var range in ranges[0])
+            System.Threading.Tasks.Parallel.ForEach(ranges, range =>
             {
                 HashSet<string> knownInvalidIds = [];
                 var spl = range.Split('-');
                 long start = long.Parse(spl[0]);
                 long end = long.Parse(spl[1]);
+                long localSum = 0;
                 for (long i = start; i <= end; i++)
                 {
                     var numstring = i.ToString();
@@ -61,11 +66,12 @@ namespace Aoc2025.Day_02 {
                             if (knownInvalidIds.Contains(numstring))
                                 continue;
                             knownInvalidIds.Add(numstring);
-                            sum += i;
+                            localSum += i;
                         }
                     }
                 }
-            }
+                System.Threading.Interlocked.Add(ref sum, localSum);
+            });
             Console.WriteLine(sum);
         }
 
