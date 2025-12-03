@@ -5,35 +5,22 @@ namespace Aoc2025.Day_03 {
 
         const string FILEPATH = "Day_03/input.txt";
         
-        public static void Part1() {
-            var banks = ParseLinesAsList(FILEPATH, x => x.Select(c => c - '0').ToArray());
-            long sum = banks.Sum(bank => SolveBank(bank, 2));
-            Console.WriteLine(sum);
-        }
-        public static void Part2() {
-            var banks = ParseLinesAsList(FILEPATH, x => x.Select(c => c - '0').ToArray());
-            long sum = banks.Sum(bank => SolveBank(bank, 12));
-            Console.WriteLine(sum);
-        }
-        private static long SolveBank(int[] bank, int requiredBatteries)
+        public static void Part1() =>
+            Console.WriteLine(ParseLinesAsList(FILEPATH, x => x.Select(c => c - '0').ToArray()).Sum(bank => SolveBank(bank, 2)));
+        
+        public static void Part2() =>
+            Console.WriteLine(ParseLinesAsList(FILEPATH, x => x.Select(c => c - '0').ToArray()).Sum(bank => SolveBank(bank, 12)));
+
+        private static long SolveBank(int[] bank, int requiredBatteries) =>
+             Enumerable.Range(0, requiredBatteries)
+                .Aggregate((index: 0, res: 0L), (state, counter) => 
+                    UpdateIndexAndRes(bank, state.index, state.res, requiredBatteries - 1, counter)).res;
+
+        private static (int, long) UpdateIndexAndRes(int[] bank, int index, long res, int bat, int counter)
         {
-            int index = 0;
-            long res = 0;
-            int bat = requiredBatteries - 1;
-            for (int counter = 0; counter <= bat; counter++)
-            {
-                int largest = 0;
-                for (int i = index; i < bank.Length - (bat - counter); i++)
-                {
-                    if (bank[i] > largest)
-                    {
-                        largest = bank[i];
-                        index = i + 1;
-                    }
-                }
-                res += largest * (long)Math.Pow(10, bat - counter);
-            }
-            return res;
+            var slice = bank[index..(bank.Length - (bat - counter))];
+            int largest = slice.Max();
+            return (index + Array.IndexOf(slice, largest) + 1, res + largest * (long)Math.Pow(10, bat - counter));
         }
     }
 }
