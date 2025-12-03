@@ -17,10 +17,6 @@ namespace Aoc2025.Day_03 {
                     UpdateIndexAndRes(bank, state.index, state.res, requiredBatteries - 1, counter)).res;
 
         private static (int, long) UpdateIndexAndRes(int[] bank, int index, long res, int bat, int counter)
-        {
-            var slice = bank[index..(bank.Length - (bat - counter))];
-            int largest = slice.Max();
-            return (index + Array.IndexOf(slice, largest) + 1, res + largest * (long)Math.Pow(10, bat - counter));
-        }
+            => (index+Array.IndexOf(bank[index..(bank.Length-(bat-counter))],bank[index..(bank.Length-(bat-counter))].Max())+1,res+bank[index..(bank.Length-(bat-counter))].Max()*(long)Math.Pow(10,bat-counter));
     }
 }
