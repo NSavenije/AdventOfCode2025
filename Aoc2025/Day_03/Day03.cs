@@ -7,20 +7,12 @@ namespace Aoc2025.Day_03 {
         
         public static void Part1() {
             var banks = ParseLinesAsList(FILEPATH, x => x.Select(c => c - '0').ToArray());
-            long sum = 0;
-            foreach(var bank in banks)
-            {
-                sum += SolveBank(bank, 2);
-            }
+            long sum = banks.Sum(bank => SolveBank(bank, 2));
             Console.WriteLine(sum);
         }
         public static void Part2() {
             var banks = ParseLinesAsList(FILEPATH, x => x.Select(c => c - '0').ToArray());
-            long sum = 0;
-            foreach(var bank in banks)
-            {
-                sum += SolveBank(bank, 12);
-            }
+            long sum = banks.Sum(bank => SolveBank(bank, 12));
             Console.WriteLine(sum);
         }
         private static long SolveBank(int[] bank, int requiredBatteries)
