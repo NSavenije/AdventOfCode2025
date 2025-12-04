@@ -28,6 +28,30 @@ namespace Aoc2025
             return matrix;
         }
 
+        public static ICollection<T> GetNeighbours<T>(int x, int y, T[,] matrix, bool includeCorners = false)
+        {
+            List<T> neighbours = [];
+            int rows = matrix.GetLength(0);
+            int cols = matrix.GetLength(1);
+            // Directions: N, S, E, W
+            int[] dx = [-1, 0, 1, 0];
+            int[] dy = [0, -1, 0, 1];
+            // If corners included, add diagonals
+            if (includeCorners)
+            {
+                dx = [-1, -1, -1, 0, 0, 1, 1, 1];
+                dy = [-1, 0, 1, -1, 1, -1, 0, 1];
+            }
+            for (int i = 0; i < dx.Length; i++)
+            {
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+                if (nx >= 0 && nx < cols && ny >= 0 && ny < rows)
+                    neighbours.Add(matrix[nx, ny]);
+            }
+            return neighbours;
+        }
+
         public static int[,] ParseDigitMatrix(string filepath) =>
             ParseMatrix(filepath, c => c - '0');
         
