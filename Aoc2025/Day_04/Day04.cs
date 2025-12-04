@@ -19,11 +19,11 @@ namespace Aoc2025.Day_04 {
             HashSet<(int x,int y)> toUpdate;
             do {
                 toUpdate = [];
-                for (int y = 0; y < rows; y++)
+                for (int y = 1; y < rows - 1; y++)
                 {
-                    for (int x = 0; x < cols; x++)
+                    for (int x = 1; x < cols - 1; x++)
                     {
-                        if (matrix[x,y] == '@' && UnsafeGetNeighbours(x, y, matrix, includeCorners: true).Count(c => c == '@') < 4)
+                        if (matrix[x,y] == '@' && UnsafeGetNeighbours(x, y, matrix, true).Count(c => c == '@') < 4)
                         {
                             toUpdate.Add((x,y));
                         }

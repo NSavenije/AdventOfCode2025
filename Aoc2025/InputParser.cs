@@ -90,9 +90,9 @@ namespace Aoc2025
         /// <param name="matrix">2D array to search in.</param>
         /// <param name="includeCorners">Whether to include diagonal neighbors.</param>
         /// <returns>Collection of neighboring values.</returns>
-        public static HashSet<T> GetNeighbours<T>(int x, int y, T[,] matrix, bool includeCorners = false)
+        public static ICollection<T> GetNeighbours<T>(int x, int y, T[,] matrix, bool includeCorners = false)
         {
-            HashSet<T> neighbours = [];
+            List<T> neighbours = [];
             int rows = matrix.GetLength(0);
             int cols = matrix.GetLength(1);
             var dx = includeCorners ? DX_ALL : DX_CARDINAL;
@@ -117,9 +117,9 @@ namespace Aoc2025
         /// <param name="matrix">2D array to search in.</param>
         /// <param name="includeCorners">Whether to include diagonal neighbors.</param>
         /// <returns>Collection of neighboring values (may throw if out of bounds).</returns>
-        public static HashSet<T> UnsafeGetNeighbours<T>(int x, int y, T[,] matrix, bool includeCorners = false)
+        public static ICollection<T> UnsafeGetNeighbours<T>(int x, int y, T[,] matrix, bool includeCorners = false)
         {
-            HashSet<T> neighbours = [];
+            List<T> neighbours = [];
             var dx = includeCorners ? DX_ALL : DX_CARDINAL;
             var dy = includeCorners ? DY_ALL : DY_CARDINAL;
             for (int i = 0; i < dx.Length; i++)
