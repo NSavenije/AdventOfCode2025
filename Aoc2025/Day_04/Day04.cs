@@ -1,5 +1,4 @@
 namespace Aoc2025.Day_04 {
-    using System.Linq;
     using static InputParser;
     public static class Day04 {
         const string FILEPATH = "Day_04/input.txt";
@@ -23,7 +22,7 @@ namespace Aoc2025.Day_04 {
                 {
                     for (int x = 1; x < cols - 1; x++)
                     {
-                        if (matrix[x,y] == '@' && UnsafeGetNeighbours(x, y, matrix, true).Count(c => c == '@') < 4)
+                        if (matrix[x,y] == '@' && UnsafeCountNeighbours(x, y, matrix, '@', 3, true) < 4)
                         {
                             toUpdate.Add((x,y));
                         }
