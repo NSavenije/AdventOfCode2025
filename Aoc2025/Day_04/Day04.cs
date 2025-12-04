@@ -15,25 +15,25 @@ namespace Aoc2025.Day_04 {
             int cols = matrix.GetLength(1);
             int res = 0;
             
-            HashSet<(int x,int y)> toUpdate;
+            System.Collections.Concurrent.ConcurrentBag<(int x, int y)> toUpdate;
             do {
                 toUpdate = [];
-                for (int y = 1; y < rows - 1; y++)
+                Parallel.For(1, rows - 1, y =>
                 {
                     for (int x = 1; x < cols - 1; x++)
                     {
-                        if (matrix[x,y] == '@' && UnsafeCountNeighbours(x, y, matrix, '@', 3, true) < 4)
+                        if (matrix[x, y] == '@' && UnsafeCountNeighbours(x, y, matrix, '@', 3, true) < 4)
                         {
-                            toUpdate.Add((x,y));
+                            toUpdate.Add((x, y));
                         }
                     }
-                }
-                foreach((int x, int y) in toUpdate)
+                });
+                foreach ((int x, int y) in toUpdate)
                 {
-                    matrix[x,y] = '.';
+                    matrix[x, y] = '.';
                 }
                 res += toUpdate.Count;
-            } while (toUpdate.Count > 0 && part2);
+            } while (!toUpdate.IsEmpty && part2);
             return res;
         }
     }
