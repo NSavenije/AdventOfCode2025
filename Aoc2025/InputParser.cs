@@ -2,6 +2,10 @@ namespace Aoc2025
 {
     public static class InputParser
     {
+        private static readonly int[] DX_CARDINAL = [-1, 0, 1, 0];
+        private static readonly int[] DY_CARDINAL = [0, -1, 0, 1];
+        private static readonly int[] DX_ALL = [-1, -1, -1, 0, 0, 1, 1, 1];
+        private static readonly int[] DY_ALL = [-1, 0, 1, -1, 1, -1, 0, 1];
         public static List<T> ParseLinesAsList<T>(string filePath, Func<string, T> parser)
         {
             string[] lines = File.ReadAllLines($"{Utils.GetProjectRoot()}/{filePath}");
@@ -33,15 +37,8 @@ namespace Aoc2025
             List<T> neighbours = [];
             int rows = matrix.GetLength(0);
             int cols = matrix.GetLength(1);
-            // Directions: N, S, E, W
-            int[] dx = [-1, 0, 1, 0];
-            int[] dy = [0, -1, 0, 1];
-            // If corners included, add diagonals
-            if (includeCorners)
-            {
-                dx = [-1, -1, -1, 0, 0, 1, 1, 1];
-                dy = [-1, 0, 1, -1, 1, -1, 0, 1];
-            }
+            var dx = includeCorners ? DX_ALL : DX_CARDINAL;
+            var dy = includeCorners ? DY_ALL : DY_CARDINAL;
             for (int i = 0; i < dx.Length; i++)
             {
                 int nx = x + dx[i];
