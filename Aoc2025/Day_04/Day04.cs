@@ -20,11 +20,19 @@ namespace Aoc2025.Day_04 {
             do {
                 toUpdate = [];
                 for (int y = 0; y < rows; y++)
+                {
                     for (int x = 0; x < cols; x++)
+                    {
                         if (matrix[x,y] == '@' && GetNeighbours(x, y, matrix, true).Count(c => c == '@') < 4)
+                        {
                             toUpdate.Add((x,y));
+                        }
+                    }
+                }
                 foreach((int x, int y) in toUpdate)
+                {
                     matrix[x,y] = '.';
+                }
                 res += toUpdate.Count;
             } while (toUpdate.Count > 0 && part2);
             return res;
