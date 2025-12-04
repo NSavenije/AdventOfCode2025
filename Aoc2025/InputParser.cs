@@ -20,16 +20,35 @@ namespace Aoc2025
         public static List<string> ParseLinesAsList(string filePath) =>
             ParseLinesAsList(filePath, l => l);
 
-        public static T[,] ParseMatrix<T>(string filePath, Func<char, T> parser)
+        public static T[,] ParseMatrix<T>(string filePath, Func<char, T> parser, char? padBorder = null, int borderDepth = 0)
         {
             var lines = File.ReadAllLines($"{Utils.GetProjectRoot()}/{filePath}");
             int rows = lines.Length;
             int cols = lines[0].Length;
-            var matrix = new T[rows, cols];
-            for (int i = 0; i < rows; i++)
-                for (int j = 0; j < cols; j++)
-                    matrix[i, j] = parser(lines[i][j]);
-            return matrix;
+            if (padBorder.HasValue && borderDepth > 0)
+            {
+                int newRows = rows + 2 * borderDepth;
+                int newCols = cols + 2 * borderDepth;
+                var matrix = new T[newRows, newCols];
+                T pad = parser(padBorder.Value);
+                // Fill entire matrix with pad
+                for (int i = 0; i < newRows; i++)
+                    for (int j = 0; j < newCols; j++)
+                        matrix[i, j] = pad;
+                // Copy original data into center
+                for (int i = 0; i < rows; i++)
+                    for (int j = 0; j < cols; j++)
+                        matrix[i + borderDepth, j + borderDepth] = parser(lines[i][j]);
+                return matrix;
+            }
+            else
+            {
+                var matrix = new T[rows, cols];
+                for (int i = 0; i < rows; i++)
+                    for (int j = 0; j < cols; j++)
+                        matrix[i, j] = parser(lines[i][j]);
+                return matrix;
+            }
         }
 
         public static ICollection<T> GetNeighbours<T>(int x, int y, T[,] matrix, bool includeCorners = false)
@@ -49,11 +68,25 @@ namespace Aoc2025
             return neighbours;
         }
 
+        public static ICollection<T> UnsafeGetNeighbours<T>(int x, int y, T[,] matrix, bool includeCorners = false)
+        {
+            List<T> neighbours = [];
+            var dx = includeCorners ? DX_ALL : DX_CARDINAL;
+            var dy = includeCorners ? DY_ALL : DY_CARDINAL;
+            for (int i = 0; i < dx.Length; i++)
+            {
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+                neighbours.Add(matrix[nx, ny]);
+            }
+            return neighbours;
+        }
+
         public static int[,] ParseDigitMatrix(string filepath) =>
             ParseMatrix(filepath, c => c - '0');
         
 
-        public static char[,] ParseCharMatrix(string filePath) =>
-            ParseMatrix(filePath, c => c);
+        public static char[,] ParseCharMatrix(string filePath, char? padBorder = null, int borderDepth = 0) =>
+            ParseMatrix(filePath, c => c, padBorder, borderDepth);
     }
 }

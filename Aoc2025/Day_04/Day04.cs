@@ -11,7 +11,7 @@ namespace Aoc2025.Day_04 {
 
         private static int Solve(bool part2)
         {
-            char[,] matrix = ParseCharMatrix(FILEPATH);
+            char[,] matrix = ParseCharMatrix(FILEPATH, '.', 1);
             int rows = matrix.GetLength(0);
             int cols = matrix.GetLength(1);
             int res = 0;
@@ -23,7 +23,7 @@ namespace Aoc2025.Day_04 {
                 {
                     for (int x = 0; x < cols; x++)
                     {
-                        if (matrix[x,y] == '@' && GetNeighbours(x, y, matrix, true).Count(c => c == '@') < 4)
+                        if (matrix[x,y] == '@' && UnsafeGetNeighbours(x, y, matrix, includeCorners: true).Count(c => c == '@') < 4)
                         {
                             toUpdate.Add((x,y));
                         }
