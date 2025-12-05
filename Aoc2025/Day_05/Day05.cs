@@ -34,9 +34,13 @@ namespace Aoc2025.Day_05 {
         }
         public static void Part2() {
             var (ranges, _) = ParseInput(false);
-            List<(long st, long en)> merged = MergeRanges(ranges);
-            
-            long count = merged.Sum(x => x.en - x.st + 1);
+            long count = 0;
+            long pos = 0;
+            foreach((long start, long end) in ranges)
+            {
+                count += Math.Max(0, end - Math.Max(start - 1, pos));
+                pos = Math.Max(end, pos);
+            }
             Console.WriteLine(count);
         }
 
