@@ -4,7 +4,7 @@ namespace Aoc2025.Day_05 {
         const string FILEPATH = "Day_05/input.txt";
         public static void Part1() {
             var input = ParseLinesAsList(FILEPATH, c => c);
-            SortedDictionary<long,long> freshStarts = [];
+            List<(long st,long en)> ranges = [];
             bool parsingRanges = true;
             List<long> foodStuffs = [];
             foreach (string line in input)
@@ -19,11 +19,7 @@ namespace Aoc2025.Day_05 {
                     string[] items = line.Split('-');
                     long start = long.Parse(items[0]);
                     long end = long.Parse(items[1]);
-                    if (!freshStarts.TryGetValue(start, out long otherEnd))
-                        freshStarts.Add(start,end);
-                    else if(otherEnd > end)
-                        freshStarts[start] = otherEnd;
-
+                    ranges.Add((start, end));
                 }
                 else
                 {
@@ -31,18 +27,15 @@ namespace Aoc2025.Day_05 {
                 }
             }
             long freshCounter = 0;
+            ranges.Sort();
 
             foreach (long item in foodStuffs)
             {
-                foreach(long start in freshStarts.Keys)
+                foreach((long start, long end) in ranges)
                 {
-                    if( start > item )
-                        break;
-                    long end = freshStarts[start];
-                    if (end >= item)
+                    if( item >= start && item <= end)
                     {
                         freshCounter++;
-                        // Console.WriteLine($"{item} found {start}-{end}");
                         break;
                     }
                 }
