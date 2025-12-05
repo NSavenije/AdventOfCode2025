@@ -1,4 +1,5 @@
 namespace Aoc2025.Day_04 {
+    using System.Linq;
     using static InputParser;
     public static class Day04 {
         const string FILEPATH = "Day_04/input.txt";
@@ -15,25 +16,25 @@ namespace Aoc2025.Day_04 {
             int cols = matrix.GetLength(1);
             int res = 0;
             
-            System.Collections.Concurrent.ConcurrentBag<(int x, int y)> toUpdate;
+            HashSet<(int x,int y)> toUpdate;
             do {
                 toUpdate = [];
-                Parallel.For(1, rows - 1, y =>
+                for (int y = 1; y < rows - 1; y++)
                 {
                     for (int x = 1; x < cols - 1; x++)
                     {
-                        if (matrix[x, y] == '@' && UnsafeCountNeighbours(x, y, matrix, '@', 3, true) < 4)
+                        if (matrix[x,y] == '@' && UnsafeGetNeighbours(x, y, matrix, true).Count(c => c == '@') < 4)
                         {
-                            toUpdate.Add((x, y));
+                            toUpdate.Add((x,y));
                         }
                     }
-                });
-                foreach ((int x, int y) in toUpdate)
+                }
+                foreach((int x, int y) in toUpdate)
                 {
-                    matrix[x, y] = '.';
+                    matrix[x,y] = '.';
                 }
                 res += toUpdate.Count;
-            } while (!toUpdate.IsEmpty && part2);
+            } while (toUpdate.Count > 0 && part2);
             return res;
         }
     }

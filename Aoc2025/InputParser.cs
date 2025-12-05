@@ -132,31 +132,6 @@ namespace Aoc2025
         }
 
         /// <summary>
-        /// Gets the values of all neighboring cells (cardinal or all 8 directions) for a given cell in a matrix.
-        /// Does NOT perform bounds checking—assumes all neighbors are valid (useful if you padded the matrix).
-        /// </summary>
-        /// <typeparam name="T">The type of the matrix elements.</typeparam>
-        /// <param name="x">X coordinate (column).</param>
-        /// <param name="y">Y coordinate (row).</param>
-        /// <param name="matrix">2D array to search in.</param>
-        /// <param name="includeCorners">Whether to include diagonal neighbors.</param>
-        /// <returns>Collection of neighboring values (may throw if out of bounds).</returns>
-        public static int UnsafeCountNeighbours(int x, int y, char[,] matrix, char c, short limit, bool includeCorners = false)
-        {
-            int count = 0;
-            var dx = includeCorners ? DX_ALL : DX_CARDINAL;
-            var dy = includeCorners ? DY_ALL : DY_CARDINAL;
-            for (int i = 0; i < dx.Length; i++)
-            {
-                int nx = x + dx[i];
-                int ny = y + dy[i];
-                if (matrix[nx, ny] == c && ++count > limit)
-                    return 8;
-            }
-            return count;
-        }
-
-        /// <summary>
         /// Parses a 2D matrix of digits from a file (each character is converted to int).
         /// </summary>
         /// <param name="filepath">Relative path to the input file.</param>

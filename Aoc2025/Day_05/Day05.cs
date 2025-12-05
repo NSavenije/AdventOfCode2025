@@ -3,37 +3,27 @@ namespace Aoc2025.Day_05 {
     public static class Day05 {
         const string FILEPATH = "Day_05/input.txt";
         public static void Part1() {
-            var input = ParseLinesAsList(FILEPATH, c => c);
-            List<(long st,long en)> ranges = [];
-            bool parsingRanges = true;
-            List<long> foodStuffs = [];
-            foreach (string line in input)
-            {
-                if (line == "")
-                {
-                    parsingRanges = false;  
-                    continue;
-                } 
-                if (parsingRanges)
-                {
-                    string[] items = line.Split('-');
-                    long start = long.Parse(items[0]);
-                    long end = long.Parse(items[1]);
-                    ranges.Add((start, end));
-                }
-                else
-                {
-                    foodStuffs.Add(long.Parse(line));
-                }
-            }
+            var (ranges, ids) = ParseInput(true);
+            List<(long, long)> merged = MergeRanges(ranges);
             long freshCounter = 0;
-            ranges.Sort();
 
-            foreach (long item in foodStuffs)
+            foreach (long id in ids)
             {
-                foreach((long start, long end) in ranges)
+                int l = 0;
+                int r = merged.Count - 1;
+                while (l <= r)
                 {
-                    if( item >= start && item <= end)
+                    int mid = l + (r - l) / 2;
+                    (long st, long en) = merged[mid];
+                    if (id < st)
+                    {
+                        r = mid - 1;
+                    }
+                    else if (id > en)
+                    {
+                        l = mid + 1;
+                    }
+                    else
                     {
                         freshCounter++;
                         break;
@@ -43,18 +33,15 @@ namespace Aoc2025.Day_05 {
             Console.WriteLine(freshCounter);
         }
         public static void Part2() {
-            var input = ParseLinesAsList(FILEPATH, c => c);
-            List<(long st,long en)> ranges = [];
-            foreach (string line in input)
-            {
-                if (line == "") break;
+            var (ranges, _) = ParseInput(false);
+            List<(long st, long en)> merged = MergeRanges(ranges);
+            
+            long count = merged.Sum(x => x.en - x.st + 1);
+            Console.WriteLine(count);
+        }
 
-                string[] items = line.Split('-');
-                long start = long.Parse(items[0]);
-                long end = long.Parse(items[1]);
-                ranges.Add((start, end));
-            }
-            ranges.Sort();
+        private static List<(long, long)> MergeRanges(List<(long,long)> ranges)
+        {
             List<(long st, long en)> merged = [];
             foreach (var (start, end) in ranges)
             {
@@ -75,12 +62,38 @@ namespace Aoc2025.Day_05 {
                     }
                 }
             }
-            long count = 0;
-            foreach (var (start, end) in merged)
+            return merged;
+        }
+
+        private static (List<(long,long)> ranges, List<long> ids) ParseInput(bool parseIds = true)
+        {
+            var input = ParseLinesAsList(FILEPATH, c => c);
+            List<(long st,long en)> ranges = [];
+            List<long> ids = [];
+
+            bool parsingRanges = true;
+            foreach (string line in input)
             {
-                count += end - start + 1;
+                if (line == "")
+                {
+                    parsingRanges = false;  
+                    if (parseIds)
+                        continue;
+                    else 
+                        break;
+                } 
+                if (parsingRanges)
+                {
+                    string[] items = line.Split('-');
+                    ranges.Add((long.Parse(items[0]), long.Parse(items[1])));
+                }
+                else
+                {
+                    ids.Add(long.Parse(line));
+                }
             }
-            Console.WriteLine(count);
+            ranges.Sort();
+            return (ranges, ids);
         }
     }
 }
