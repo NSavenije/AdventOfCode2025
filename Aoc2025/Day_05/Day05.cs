@@ -1,10 +1,11 @@
 namespace Aoc2025.Day_05 {
     using static InputParser;
     public static class Day05 {
-        const string FILEPATH = "Day_05/ex.txt";
+        const string FILEPATH = "Day_05/input.txt";
         public static void Part1() {
             var input = ParseLinesAsList(FILEPATH, c => c);
-            SortedDictionary<long,long> ranges = [];
+            SortedDictionary<long,long> freshStarts = [];
+            SortedDictionary<long,long> freshEnds = [];
             bool parsingRanges = true;
             List<long> foodStuffs = [];
             foreach (string line in input)
@@ -19,58 +20,51 @@ namespace Aoc2025.Day_05 {
                     string[] items = line.Split('-');
                     long start = long.Parse(items[0]);
                     long end = long.Parse(items[1]);
-                    if (!ranges.TryGetValue(start, out _))
-                        ranges.Add(start,end);
+                    if (!freshStarts.TryGetValue(start, out _))
+                        freshStarts.Add(start,end);
+                    if (!freshEnds.TryGetValue(end, out _))
+                        freshEnds.Add(end,start);
                 }
                 else
                 {
                     foodStuffs.Add(long.Parse(line));
                 }
             }
-            List<long> keys = ranges.Keys.ToList();
+            List<long> starts = freshStarts.Keys.ToList();
             long freshCounter = 0;
 
-            foreach(long item in foodStuffs)
+            foreach (long item in foodStuffs)
             {
-                // Binary Search the dictionary
-                int minI = 0;
-                long maxV = ranges.Last().Value;
-                int maxI = keys.Count;
-                
-                while(true)
+                int left = 0; // smallest possible index
+                int right = freshEnds.Count - 1; // largest possible index
+                bool found = false;
+                while (left <= right) // if there is still search space available
                 {
-                    int minoldI = minI;
-                    int maxoldI = maxI;
-                    int index = (minI + maxI) / 2;
-                    long start = keys[index];
-                    long end = ranges[start];   
-                    if(item >= start && item <= end)
-                    {
-                        freshCounter++;
-                        Console.WriteLine($"{item} is fresh!");
-                        break; // Fresh
-                    }
-                    if(item >= start)
-                    {
-                        minI = index;
-                    }
-                    if(item <= end)
-                    {
-                        maxI = index;
-                    }
-                    if (minoldI == minI && maxoldI == maxI)
-                    {
-                        Console.WriteLine($"{item} is spoiled...");
-                        break; // not fresh
-                    }
-                    if (minI == maxI)
-                    {
-                        break;
-                    }
+                    int mid = (left + right) / 2; // try the middle of the search space
+                    (long s, long e) ls = (mid, freshStarts[mid]);
+                    (long s, long e) rs = (mid, freshEnds[mid]);
 
+                    if (item < Math.Min(ls.s, rs.s))
+                    {
+                        right = mid - 1;
+                    }
+                    else if (item > end)
+                    {
+                        left = mid + 1;
+                    }
+                    else
+                    {
+                        found = true;
+                        Console.WriteLine($"{item} is fresh! {start}-{end}");
+                        break;
+                        
+                    }
+                }
+                if (found)
+                {
+                    freshCounter++;
                 }
             }
-            // TODO: Implement Part 1
             Console.WriteLine(freshCounter);
         }
         public static void Part2() {
