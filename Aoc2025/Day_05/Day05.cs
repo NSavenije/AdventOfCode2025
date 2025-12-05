@@ -45,15 +45,13 @@ namespace Aoc2025.Day_05 {
         public static void Part2() {
             var input = ParseLinesAsList(FILEPATH, c => c);
             List<(long st,long en)> ranges = [];
-
             bool parsingRanges = true;
-
             foreach (string line in input)
             {
-                if (line == "")
-                {
+                if (line == "") 
+                { 
                     break;
-                } 
+                }
                 if (parsingRanges)
                 {
                     string[] items = line.Split('-');
@@ -63,12 +61,30 @@ namespace Aoc2025.Day_05 {
                 }
             }
             ranges.Sort();
-            long count = 0;
-            long pos = 0;
-            foreach((long start, long end) in ranges)
+            List<(long st, long en)> merged = [];
+            foreach (var (start, end) in ranges)
             {
-                count += Math.Max(0, end - Math.Max(start - 1, pos));
-                pos = end;
+                if (merged.Count == 0)
+                {
+                    merged.Add((start, end));
+                }
+                else
+                {
+                    var (st, en) = merged[^1];
+                    if (start <= en + 1)
+                    {
+                        merged[^1] = (st, Math.Max(en, end));
+                    }
+                    else
+                    {
+                        merged.Add((start, end));
+                    }
+                }
+            }
+            long count = 0;
+            foreach (var (start, end) in merged)
+            {
+                count += end - start + 1;
             }
             Console.WriteLine(count);
         }
