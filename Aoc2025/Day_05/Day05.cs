@@ -4,26 +4,13 @@ namespace Aoc2025.Day_05 {
         const string FILEPATH = "Day_05/input.txt";
         public static void Part1() {
             var (ranges, ids) = ParseInput(true);
-            List<(long, long)> merged = MergeRanges(ranges);
+            
             long freshCounter = 0;
-
-            foreach (long id in ids)
+            foreach (long item in ids)
             {
-                int l = 0;
-                int r = merged.Count - 1;
-                while (l <= r)
+                foreach((long start, long end) in ranges)
                 {
-                    int mid = l + (r - l) / 2;
-                    (long st, long en) = merged[mid];
-                    if (id < st)
-                    {
-                        r = mid - 1;
-                    }
-                    else if (id > en)
-                    {
-                        l = mid + 1;
-                    }
-                    else
+                    if( item >= start && item <= end)
                     {
                         freshCounter++;
                         break;
@@ -42,31 +29,6 @@ namespace Aoc2025.Day_05 {
                 pos = Math.Max(end, pos);
             }
             Console.WriteLine(count);
-        }
-
-        private static List<(long, long)> MergeRanges(List<(long,long)> ranges)
-        {
-            List<(long st, long en)> merged = [];
-            foreach (var (start, end) in ranges)
-            {
-                if (merged.Count == 0)
-                {
-                    merged.Add((start, end));
-                }
-                else
-                {
-                    var (st, en) = merged[^1];
-                    if (start <= en + 1)
-                    {
-                        merged[^1] = (st, Math.Max(en, end));
-                    }
-                    else
-                    {
-                        merged.Add((start, end));
-                    }
-                }
-            }
-            return merged;
         }
 
         private static (List<(long,long)> ranges, List<long> ids) ParseInput(bool parseIds = true)
