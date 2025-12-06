@@ -1,5 +1,6 @@
 namespace Aoc2025.Day_06 {
     using System.Collections.Generic;
+    using System.Text;
     using static InputParser;
     public static class Day06 {
         const string FILEPATH = "Day_06/input.txt";
@@ -12,25 +13,22 @@ namespace Aoc2025.Day_06 {
                 if (line[0] == '*' || line[0] == '+')
                 {
                     ops = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    break;
                 }
-                else
-                {
                 long[] nums = line.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(long.Parse).ToArray();
                 numLists.Add(nums);
-                }
             }
             long sumTotal = 0;
-            for(int i = 0; i < ops.Length; i++)
+            for (int i = 0; i < ops.Length; i++)
             {
                 long total = ops[i] == "+" ? 0 : 1;
-                foreach(long[] nums in numLists)
+                foreach (long[] nums in numLists)
                 {
                     long num = nums[i];
                     total = ops[i] == "+" ? total + num : total * num;
                 }
                 sumTotal += total;
             }
-            // TODO: Implement Part 1
             Console.WriteLine(sumTotal);
         }
         public static void Part2() {
@@ -40,30 +38,27 @@ namespace Aoc2025.Day_06 {
             string[] ops = input[^1].Split(' ', StringSplitOptions.RemoveEmptyEntries);
             int numberOfSums = ops.Length;
             List<long>[] sumLists = new List<long>[numberOfSums];
-            for(int i = 0; i < numberOfSums; i++)
-            {
-                sumLists[i] = new();
-            }
             int sumIndex = -1;
-            for(int col = 0; col < columns; col++)
+            for (int col = 0; col < columns; col++)
             {
                 if (input[^1][col] == '+' || input[^1][col] == '*')
                 {
                     sumIndex++;
+                    sumLists[sumIndex] = [];
                 }
-                var numStringBuilder = new System.Text.StringBuilder();
-                for(int row = 0; row < lines - 1; row++)
+                var numStringBuilder = new StringBuilder();
+                for (int row = 0; row < lines - 1; row++)
                 {
                     numStringBuilder.Append(input[row][col]);
                 }
-                if(long.TryParse(numStringBuilder.ToString(), out long num))
+                if (long.TryParse(numStringBuilder.ToString(), out long num))
                     sumLists[sumIndex].Add(num);
             }
             long sumTotal = 0;
-            for(int i = 0; i < ops.Length; i++)
+            for (int i = 0; i < ops.Length; i++)
             {
                 long total = ops[i] == "+" ? 0 : 1;
-                foreach(long num in sumLists[i])
+                foreach (long num in sumLists[i])
                 {
                     total = ops[i] == "+" ? total + num : total * num;
                 }
