@@ -50,7 +50,6 @@ namespace Aoc2025.Day_07 {
             Console.WriteLine(splitCount);
         }
 
-
         public static void Part2()
         {
             var matrix = ParseCharMatrix(FILEPATH);
@@ -65,14 +64,13 @@ namespace Aoc2025.Day_07 {
                 }
             }
 
-            var memo = new Dictionary<(int row, int col), long>();
+            Dictionary<(int row, int col), long> memo = [];
 
             long Search(int row, int col)
             {
                 if (row == rows - 1)
                     return 1;
-                var key = (row, col);
-                if (memo.TryGetValue(key, out var cached))
+                if (memo.TryGetValue((row, col), out var cached))
                     return cached;
                 long total = 0;
                 if (matrix[row, col] == '^')
@@ -84,7 +82,7 @@ namespace Aoc2025.Day_07 {
                 {
                     total += Search(row + 1, col);
                 }
-                memo[key] = total;
+                memo[(row, col)] = total;
                 return total;
             }
 
