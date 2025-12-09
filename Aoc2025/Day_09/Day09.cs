@@ -60,11 +60,12 @@ namespace Aoc2025.Day_09 {
                     }
                 }
             }
-
+            Console.WriteLine($"green: {greenTiles.Count}, red: {redTiles.Count}");
             long largest = 0;
             // For each pair of red tiles, treat as opposite corners
             for (int i = 0; i < n; i++)
             {
+                Console.WriteLine($"{i}: {largest}");
                 for (int j = i + 1; j < n; j++)
                 {
                     var (x1, y1) = redTiles[i];
@@ -75,7 +76,7 @@ namespace Aoc2025.Day_09 {
                     long maxY = Math.Max(y1, y2);
                     long area = (maxX - minX + 1) * (maxY - minY + 1);
                     if (area <= largest) continue;
-                    if(IsTileStrictInRectangle(redTiles, minX, maxX, minY, maxY)) continue;
+                    if (IsTileStrictInRectangle(greenTiles, minX, maxX, minY, maxY)) continue;
                     if (IsPointOutsideRectangle(x1,y2)) continue;
                     if (IsPointOutsideRectangle(x2,y1)) continue;
 
@@ -85,7 +86,7 @@ namespace Aoc2025.Day_09 {
 
             Console.WriteLine(largest);
 
-            bool IsTileStrictInRectangle(List<(long x, long y)> polygon, long minX, long maxX, long minY, long maxY) 
+            bool IsTileStrictInRectangle(HashSet<(long x, long y)> polygon, long minX, long maxX, long minY, long maxY) 
             {
                 foreach(var (x,y) in polygon)
                 {
@@ -107,7 +108,7 @@ namespace Aoc2025.Day_09 {
                     if (x1 != x2) continue;
                     
                     // Check if the scanline crosses this vertical edge
-                    // Not sure about this....
+                    // Not sure about
                     if (x1 <= nx && (y > Math.Min(y1, y2)) && (y <= Math.Max(y1, y2)))
                     {
                         crossings++;
