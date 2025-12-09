@@ -96,20 +96,58 @@ namespace Aoc2025.Day_09 {
                 return false;
             }
 
-            bool IsPointOutsideRectangle(long nx, long y)
+            bool IsPointOutsideRectangle(long x, long y)
             {
+                if (greenTiles.Contains((x, y))) return false;
+
                 int crossings = 0;
                 int m = redTiles.Count;
                 for (int i = 0; i < m; i++)
                 {
-                    var (x1, y1) = redTiles[i];
-                    var (x2, y2) = redTiles[(i + 1) % m];
-                    // We're crossing vertical borders...
-                    if (x1 != x2) continue;
-                    
-                    // Check if the scanline crosses this vertical edge
-                    // Not sure about
-                    if (x1 <= nx && (y > Math.Min(y1, y2)) && (y <= Math.Max(y1, y2)))
+                    var (_, y0) = redTiles[(i - 1 + m) % m]; // previous
+                    var (x1, y1) = redTiles[i];              // current
+                    var (_, y2) = redTiles[(i + 1) % m];     // next
+                    var (_, y3) = redTiles[(i + 2) % m];     // next next
+                    // Check if we are hitting a corner
+                    /*
+                    HILL
+                    ..........
+                    ..1----2..
+                    ..|....|..
+                    ..|....3..
+                    ..0.......
+
+                    VALLEY
+                    ..0....3..
+                    ..|....|..
+                    ..|....|..
+                    ..1----2..
+                    ..........
+
+                    SQUIGGLE (Stair)
+                    .......3..
+                    .......|..
+                    ..1----2..
+                    ..|.......
+                    ..0.......
+
+                    SQUIGGLE (Lip)
+                    ..0.......
+                    ..|.......
+                    ..1----2..
+                    .......|..
+                    .......3..
+                    */
+                    if (y1 == y2 && y == y1) 
+                    {
+                        bool isUp1 = y0 < y1;
+                        bool isUp2 = y3 < y2;
+                        bool isValleyOrHill = isUp1 == isUp2;
+                        if (!isValleyOrHill && x > x1) 
+                            crossings++;
+                    }
+                    // Otherwise, check normal edge crossing
+                    else if (y < Math.Max(y1, y2) && y > Math.Min(y1, y2) && x > x1) 
                     {
                         crossings++;
                     }
