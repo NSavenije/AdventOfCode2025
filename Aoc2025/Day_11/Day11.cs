@@ -34,9 +34,6 @@ namespace Aoc2025.Day_11 {
         public static void Part2() {
             // The path is always svr -> fft -> dac -> out
             // Lets find all options :) and multiply
-
-            // Maybe down to up and then trow away all nodes we dont need?
-
             var lines = ParseLinesAsList(FILEPATH);
             Dictionary<string,List<string>> servers = [];
             foreach(var line in lines)
@@ -48,18 +45,10 @@ namespace Aoc2025.Day_11 {
             queue.Enqueue("svr");
             long output = 1;
             Dictionary<string, long> memo = [];
-            Console.WriteLine($"starting svr fft {CountPathsDFS("svr", "fft")}");
             output *= CountPathsDFS("svr", "fft");
-            
             memo.Clear();
-            Console.WriteLine($"starting fft dac {CountPathsDFS("fft", "dac")}");
             output *= CountPathsDFS("fft", "dac");
-
-            memo.Clear();
-            Console.WriteLine($"starting dac out {CountPathsBFS("dac", "out")}");
             output *= CountPathsBFS("dac", "out");
-
-            Console.WriteLine("Done");
 
             long CountPathsBFS(string start, string end)
             {
@@ -75,7 +64,7 @@ namespace Aoc2025.Day_11 {
                         {
                             output++;
                         }
-                        else if (server != "out")
+                        else
                         {
                             queue.Enqueue(server);
                         }
